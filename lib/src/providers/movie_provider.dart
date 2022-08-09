@@ -73,6 +73,8 @@ class MovieProvider extends ChangeNotifier {
 
   Future<List<Cast>> getMovieCast( int movieId ) async {
 
+    if(moviesCast.containsKey(movieId)) return moviesCast[movieId]!;
+    
     //Revisa mapa para vê se já tem
     print('Recuperando informação ao servidor - Atores');
     final response = await getJsonData('3/movie/$movieId/credits', _topRatedPage);

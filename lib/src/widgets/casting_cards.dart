@@ -13,6 +13,7 @@ class CastingCards extends StatelessWidget {
     //Faz parte da consulta por ai, onde vai salvar na memoria
 
     final moviesProvider = Provider.of<MovieProvider>(context, listen: false);
+
     return FutureBuilder(
       future: moviesProvider.getMovieCast(movieid),
       builder: (BuildContext context, AsyncSnapshot<List<Cast>> snapshot) {
@@ -26,7 +27,7 @@ class CastingCards extends StatelessWidget {
           );
         }
         
-        final cast = snapshot.data;
+        final cast = snapshot.data!;
         return Container(
           margin: const EdgeInsets.only(bottom: 30),
           width: double.infinity,
@@ -34,7 +35,7 @@ class CastingCards extends StatelessWidget {
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: 10,
-              itemBuilder: (context, index) => const _CastCard()),
+              itemBuilder: (context, index) =>  _CastCard(actor: cast[index],)),
         );
       },
     );
@@ -43,8 +44,10 @@ class CastingCards extends StatelessWidget {
 
 class _CastCard extends StatelessWidget {
   const _CastCard({
-    Key? key,
+    Key? key, required this.actor,
   }) : super(key: key);
+
+  final Cast actor;
 
   @override
   Widget build(BuildContext context) {
@@ -59,9 +62,9 @@ class _CastCard extends StatelessWidget {
               //onTap: () => Navigator.pushNamed(context, 'details', arguments: 'movies-slider'),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: const FadeInImage(
+                child: FadeInImage(
                   placeholder: AssetImage('assets/no-image.jpg'),
-                  image: NetworkImage('https://dummyimage.com/300'),
+                  image: NetworkImage(actor.fullprofilePathImg),
                   fit: BoxFit.cover,
                   width: 100,
                   height: 140,
@@ -69,10 +72,10 @@ class _CastCard extends StatelessWidget {
               ),
             ),
           ),
-          const Padding(
+         Padding(
             padding: EdgeInsets.only(top: 5),
             child: Text(
-              'Nome do ator aqui',
+              actor.name,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
