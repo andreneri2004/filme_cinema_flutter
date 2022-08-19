@@ -1,3 +1,4 @@
+import 'package:filme_info/search/movie_search_delegate.dart';
 import 'package:flutter/material.dart';
 import 'package:filme_info/src/widgets/widgets.dart';
 import 'package:filme_info/src/providers/movie_provider.dart';
@@ -8,13 +9,19 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final movieProvider = Provider.of<MovieProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('TMDB - Filme e Cinema, André Neri'),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.search_outlined)),
+          IconButton(
+            onPressed: () => showSearch(
+              context: context,
+              delegate: MovieSearchDelegate()
+              ), 
+            icon: const Icon(Icons.search_outlined)),
         ],
       ),
       body: SingleChildScrollView(

@@ -1,3 +1,4 @@
+import 'package:filme_info/src/model/search_movie_response.dart';
 import 'package:flutter/material.dart';
 
 import 'package:filme_info/src/model/model.dart';
@@ -21,7 +22,6 @@ class MovieProvider extends ChangeNotifier {
   int _popularPage = 0;
   int _topRatedPage = 0;
 
-
   //Criando infinito scroll da pagina
 
   MovieProvider() {
@@ -31,7 +31,7 @@ class MovieProvider extends ChangeNotifier {
   }
 
   Future<String> getJsonData(String subUrl, [int page = 1]) async {
-    var url = Uri.https(_baseUrl, subUrl,
+    final url = Uri.https(_baseUrl, subUrl,
         {'api_key': _apiKey, 'language': _language, 'page': '$page'});
 
     final response = await http.get(url);
@@ -39,7 +39,6 @@ class MovieProvider extends ChangeNotifier {
   }
 
   getOnDisplayMovies() async {
-
     final response = await getJsonData('3/movie/now_playing');
     final NowPlayResponse nowPlayResponse = NowPlayResponse.fromJson(response);
     onDisplayMovies = nowPlayResponse.results;
@@ -48,7 +47,6 @@ class MovieProvider extends ChangeNotifier {
   }
 
   getPopularMovies() async {
-
     //toda vez que chegar no fim o movieSlider chama essa função
     _popularPage++;
     final response = await getJsonData('3/movie/popular', _popularPage);
@@ -60,7 +58,6 @@ class MovieProvider extends ChangeNotifier {
   }
 
   getTopRatedMovies() async {
-
     //toda vez que chegar no fim o movieSlider chama essa função
     _topRatedPage++;
     final response = await getJsonData('3/movie/top_rated', _topRatedPage);
@@ -71,19 +68,26 @@ class MovieProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Cast>> getMovieCast( int movieId ) async {
+  Future<List<Cast>> getMovieCast(int movieId) async {
+    if (moviesCast.containsKey(movieId)) return moviesCast[movieId]!;
 
-    if(moviesCast.containsKey(movieId)) return moviesCast[movieId]!;
-    
-    //Revisa mapa para vê se já tem
-    print('Recuperando informação ao servidor - Atores');
-    final response = await getJsonData('3/movie/$movieId/credits', _topRatedPage);
+    final response =
+        await getJsonData('3/movie/$movieId/credits', _topRatedPage);
     final creditsMovie = CreditsMoveResponse.fromJson(response);
 
     moviesCast[movieId] = creditsMovie.cast;
 
     return creditsMovie.cast;
+  }
 
+  Future<List<Movie>> searchMovies(String query) async {
+    final url = Uri.https(
+        _baseUrl, '3/search/movie', {'api_key': _apiKey, 'language': _language, 'query': query});
 
+    final response = await http.get(url);
+
+    final searchResult = SearchMoveResponse.fromJson(response.body);
+
+    return searchResult.results;
   }
 }
