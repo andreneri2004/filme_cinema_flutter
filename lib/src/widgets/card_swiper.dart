@@ -31,15 +31,23 @@ class CardSwiper extends StatelessWidget {
         itemHeight: size.height * 0.4,
         itemBuilder: (_, index) {
           final movie = movies[index];
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(40),
-            child: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, 'details',
-                  arguments: movie),
-              child: FadeInImage(
-                placeholder: const AssetImage('assets/no-image.jpg'),
-                image: NetworkImage(movie.fullPosterImg),
-                fit: BoxFit.cover,
+
+          //Como existe varios IDs iguais o Hero não funciona , para isso foi criado um id dinamico.
+          movie.heroId = 'swiper-${movie.id}';
+
+
+          return Hero(
+            tag: movie.heroId!,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(40),
+              child: GestureDetector(
+                onTap: () => Navigator.pushNamed(context, 'details',
+                    arguments: movie),
+                child: FadeInImage(
+                  placeholder: const AssetImage('assets/no-image.jpg'),
+                  image: NetworkImage(movie.fullPosterImg),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           );

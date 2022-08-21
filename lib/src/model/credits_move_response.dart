@@ -1,19 +1,15 @@
-// To parse this JSON data, do
-//
-//     final creditsMoveResponse = creditsMoveResponseFromMap(jsonString);
-
 import 'dart:convert';
 
 class CreditsMoveResponse {
     CreditsMoveResponse({
         required this.id,
         required this.cast,
-        required this.crew,
+
     });
 
     int id;
     List<Cast> cast;
-    List<Cast> crew;
+
 
     factory CreditsMoveResponse.fromJson(String str) => CreditsMoveResponse.fromMap(json.decode(str));
 
@@ -21,7 +17,7 @@ class CreditsMoveResponse {
     factory CreditsMoveResponse.fromMap(Map<String, dynamic> json) => CreditsMoveResponse(
         id: json["id"],
         cast: List<Cast>.from(json["cast"].map((x) => Cast.fromMap(x))),
-        crew: List<Cast>.from(json["crew"].map((x) => Cast.fromMap(x))),
+  
     );
 
 }

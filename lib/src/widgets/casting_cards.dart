@@ -34,7 +34,7 @@ class CastingCards extends StatelessWidget {
           height: 180,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
-              itemCount: 10,
+              itemCount: cast.length,
               itemBuilder: (context, index) =>  _CastCard(actor: cast[index],)),
         );
       },
@@ -59,11 +59,11 @@ class _CastCard extends StatelessWidget {
         children: [
           Flexible(
             child: GestureDetector(
-              //onTap: () => Navigator.pushNamed(context, 'details', arguments: 'movies-slider'),
+              onTap: () => Navigator.pushNamed(context, 'actor_details', arguments: 'movies-slider'),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: FadeInImage(
-                  placeholder: AssetImage('assets/no-image.jpg'),
+                  placeholder: const AssetImage('assets/no-image.jpg'),
                   image: NetworkImage(actor.fullprofilePathImg),
                   fit: BoxFit.cover,
                   width: 100,

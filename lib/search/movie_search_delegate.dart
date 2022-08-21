@@ -41,9 +41,10 @@ class MovieSearchDelegate extends SearchDelegate {
     if (query.isEmpty) return _isEmptyContainer();
 
     final movieProvider = Provider.of<MovieProvider>(context, listen: false);
+    movieProvider.getSuggestionsByQuery(query);
 
-    return FutureBuilder(
-      future: movieProvider.searchMovies(query),
+    return StreamBuilder(
+      stream: movieProvider.suggestionStream,
       //quando tiver snapshot vai ter uma lista
       builder: (context, AsyncSnapshot<List<Movie>> snapshot) {
         if (!snapshot.hasData) return _isEmptyContainer();
@@ -66,8 +67,11 @@ class _MovieItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    movie.heroId = 'swiper-${movie.id}';
     return ListTile(
-      leading: FadeInImage(placeholder:  const  AssetImage('assets/no-image.jpg'), image: NetworkImage( movie.fullPosterImg), width: 50, fit: BoxFit.fill),
+      leading: Hero(tag: movie.heroId!,
+      child: FadeInImage(placeholder:  const  AssetImage('assets/no-image.jpg'), image: NetworkImage( movie.fullPosterImg), width: 50, fit: BoxFit.fill)),
       title: Text(movie.title),
       subtitle: Text(movie.originalTitle),
       onTap: () => Navigator.pushNamed(context, 'details', arguments: movie),
