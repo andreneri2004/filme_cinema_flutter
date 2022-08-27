@@ -59,7 +59,7 @@ class _CastCard extends StatelessWidget {
         children: [
           Flexible(
             child: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, 'actor_details', arguments: 'movies-slider'),
+              onTap: () => Navigator.pushNamed(context, 'actor_details', arguments: actor),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: FadeInImage(

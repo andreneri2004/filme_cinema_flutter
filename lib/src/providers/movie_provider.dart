@@ -1,12 +1,11 @@
-import 'dart:async';
-
-import 'package:filme_info/src/helpers/debouncer.dart';
-import 'package:filme_info/src/model/actor_response.dart';
-import 'package:filme_info/src/model/search_movie_response.dart';
-import 'package:filme_info/src/screens/screens.dart';
 import 'package:flutter/material.dart';
 
+import 'dart:async';
+import 'package:filme_info/src/helpers/debouncer.dart';
+import 'package:filme_info/src/model/actor_response.dart';
 import 'package:filme_info/src/model/model.dart';
+import 'package:filme_info/src/model/search_movie_response.dart';
+import 'package:filme_info/src/screens/screens.dart';
 import 'package:http/http.dart' as http;
 
 class MovieProvider extends ChangeNotifier {
@@ -18,8 +17,6 @@ class MovieProvider extends ChangeNotifier {
   List<Movie> onDisplayMovies = [];
   List<Movie> onPopularMovies = [];
   List<Movie> onTopRatedMovies = [];
-  List<ActorDetails> actorDetails = [];
-
   //método avançado.... carregar somente quando fizer solicitação/ e salva na mémoria.
 
   Map<int, List<Cast>> moviesCast = {};
@@ -96,6 +93,18 @@ class MovieProvider extends ChangeNotifier {
     return creditsMovie.cast;
   }
 
+  Future getActorDetails(int actorId) async {
+    if(actorList.containsKey(actorId)) return actorList[actorId]!;
+
+    final response = await getJsonData('3/person/$actorId');
+
+    final actorDetails = AtorResponse.fromJson(response);
+
+    actorList[actorId] = actorDetails;
+
+    return actorDetails;
+  }
+
   Future<List<Movie>> searchMovies(String query) async {
     final url = Uri.https(_baseUrl, '3/search/movie',
         {'api_key': _apiKey, 'language': _language, 'query': query});
@@ -122,10 +131,5 @@ class MovieProvider extends ChangeNotifier {
         .then((_) => timer.cancel());
   }
 
-  Future<AtorResponse> getActorDetails(int actorId) async {
-    if (actorList.containsKey(actorId)) return actorList[actorId]!;
-    final response = await getJsonData('3/person/$actorId');
-    final actorDetails = AtorResponse.fromJson(response);
-    return actorDetails;
-  }
+  
 }
