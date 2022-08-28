@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 class MovieProvider extends ChangeNotifier {
   final String _baseUrl = 'api.themoviedb.org';
-  final String _apiKey = 'fdff8198e4fb2043ddda5d4057cdcf89';
+  final String _apiKey = '';
   final String _language = 'pt-BR';
 
   //Método padão
@@ -21,7 +21,7 @@ class MovieProvider extends ChangeNotifier {
 
   Map<int, List<Cast>> moviesCast = {};
 
-  Map<int, AtorResponse> actorList = {};
+  Map<int, dynamic> actorList = {};
 
   //para o funcionamento do scrollController
   int _popularPage = 0;
@@ -43,9 +43,9 @@ class MovieProvider extends ChangeNotifier {
     getTopRatedMovies();
   }
 
-  Future<String> getJsonData(String subUrl, [int page = 1]) async {
+  Future<String> getJsonData(String subUrl, {int page = 1, String  language = 'pt-BR'}) async {
     final url = Uri.https(_baseUrl, subUrl,
-        {'api_key': _apiKey, 'language': _language, 'page': '$page'});
+        {'api_key': _apiKey, 'language': language, 'page': '$page'});
 
     final response = await http.get(url);
     return response.body;
@@ -62,7 +62,7 @@ class MovieProvider extends ChangeNotifier {
   getPopularMovies() async {
     //toda vez que chegar no fim o movieSlider chama essa função
     _popularPage++;
-    final response = await getJsonData('3/movie/popular', _popularPage);
+    final response = await getJsonData('3/movie/popular', page: _popularPage);
     final PopularMovieResponse popularMovieResponse =
         PopularMovieResponse.fromJson(response);
     onPopularMovies = [...onPopularMovies, ...popularMovieResponse.results];
@@ -73,7 +73,7 @@ class MovieProvider extends ChangeNotifier {
   getTopRatedMovies() async {
     //toda vez que chegar no fim o movieSlider chama essa função
     _topRatedPage++;
-    final response = await getJsonData('3/movie/top_rated', _topRatedPage);
+    final response = await getJsonData('3/movie/top_rated', page: _topRatedPage);
     final TopRatedResponse topRatedResponse =
         TopRatedResponse.fromJson(response);
     onTopRatedMovies = [...onTopRatedMovies, ...topRatedResponse.results];
@@ -85,7 +85,7 @@ class MovieProvider extends ChangeNotifier {
     if (moviesCast.containsKey(movieId)) return moviesCast[movieId]!;
 
     final response =
-        await getJsonData('3/movie/$movieId/credits', _topRatedPage);
+        await getJsonData('3/movie/$movieId/credits', page: _topRatedPage);
     final creditsMovie = CreditsMoveResponse.fromJson(response);
 
     moviesCast[movieId] = creditsMovie.cast;
@@ -93,10 +93,10 @@ class MovieProvider extends ChangeNotifier {
     return creditsMovie.cast;
   }
 
-  Future getActorDetails(int actorId) async {
+  Future <AtorResponse> getActorDetails(int actorId, {String language = "pt-BR"}) async {
     if(actorList.containsKey(actorId)) return actorList[actorId]!;
 
-    final response = await getJsonData('3/person/$actorId');
+    final response = await getJsonData('3/person/$actorId', language: language);
 
     final actorDetails = AtorResponse.fromJson(response);
 
@@ -107,7 +107,7 @@ class MovieProvider extends ChangeNotifier {
 
   Future<List<Movie>> searchMovies(String query) async {
     final url = Uri.https(_baseUrl, '3/search/movie',
-        {'api_key': _apiKey, 'language': _language, 'query': query});
+        {'api_key': _apiKey, 'language':  _language, 'query': query});
 
     final response = await http.get(url);
 
@@ -130,6 +130,4 @@ class MovieProvider extends ChangeNotifier {
     Future.delayed(const Duration(milliseconds: 301))
         .then((_) => timer.cancel());
   }
-
-  
 }

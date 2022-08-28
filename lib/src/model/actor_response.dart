@@ -6,13 +6,13 @@ class AtorResponse {
        required this.biography,
        required this.id,
        required this.name,
-       required this.profilePath,
+      this.profilePath,
     });
 
     String biography;
     int id;
     String name;
-    String profilePath;
+    String? profilePath;
 
     get fullprofilePathImg {
     return (profilePath != null)
@@ -30,4 +30,9 @@ class AtorResponse {
         name: json["name"],
         profilePath: json["profile_path"],
     );
+
+    @override
+    String toString(){
+      return "AtorResponse(id: $id, name: $name, biography: $biography, profilePath: $profilePath )" ;
+    }
 }
