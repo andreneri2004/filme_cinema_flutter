@@ -18,9 +18,11 @@ class ActorDetails extends StatelessWidget {
       future: moviesProvider.getActorDetails(actor.id),
       builder: (_, AsyncSnapshot<AtorResponse> snapshot) {
         if (!snapshot.hasData) {
-          return const Center(
-            child: CircularProgressIndicator.adaptive(
-              backgroundColor: Colors.indigo,
+          return const Scaffold(
+            body:  Center(
+              child: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.indigo,
+              ),
             ),
           );
         }

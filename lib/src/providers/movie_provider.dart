@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 class MovieProvider extends ChangeNotifier {
   final String _baseUrl = 'api.themoviedb.org';
-  final String _apiKey = '';
+  final String _apiKey = 'fdff8198e4fb2043ddda5d4057cdcf89';
   final String _language = 'pt-BR';
 
   //Método padão
